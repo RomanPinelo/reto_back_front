@@ -1,6 +1,7 @@
 let preguntas_aleatorias = true;
 let mostrar_pantalla_juego_términado = true;
 let reiniciar_puntos_al_reiniciar_el_juego = true;
+var numeroPregunta = 1;
 
 window.onload = function () {
   base_preguntas = readText("./preguntas.json");
@@ -36,17 +37,24 @@ function escogerPreguntaAleatoria() {
     }
     if (npreguntas.length == interprete_bp.length) {
       //Aquí es donde el juego se reinicia
-      if (mostrar_pantalla_juego_términado) {
+      if (mostrar_pantalla_juego_términado && preguntas_correctas < 6) {
         swal.fire({
-          title: "Juego finalizado",
-          text:
-            "Puntuación: " + preguntas_correctas + "/" + preguntas_hechas,
+          title: "¡REPROBADO!",
+          text: "Puntuación: " + preguntas_correctas + "/" + preguntas_hechas,
+          icon: "error"
+        });
+      }
+      if (mostrar_pantalla_juego_términado && preguntas_correctas > 5) {
+        swal.fire({
+          title: "¡APROBADO!",
+          text: "Puntuación: " + preguntas_correctas + "/" + preguntas_hechas,
           icon: "success"
         });
       }
       if (reiniciar_puntos_al_reiniciar_el_juego) {
         preguntas_correctas = 0
         preguntas_hechas = 0
+        numeroPregunta = 1;
       }
       npreguntas = [];
     }
@@ -55,10 +63,13 @@ function escogerPreguntaAleatoria() {
   preguntas_hechas++;
 
   escogerPregunta(n);
+
+  numeroPregunta++;
 }
 
 function escogerPregunta(n) {
   pregunta = interprete_bp[n];
+  select_id("numPregunta").innerHTML = numeroPregunta;
   select_id("categoria").innerHTML = pregunta.categoria;
   select_id("pregunta").innerHTML = pregunta.pregunta;
   select_id("numero").innerHTML = n + 1;
